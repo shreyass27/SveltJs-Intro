@@ -5,6 +5,36 @@
   let title = "";
   let image = "";
   let description = "";
+  let createdContact = {
+    name,
+    title,
+    description,
+    image
+  };
+
+  let contactList = [];
+
+  let formState = "";
+  $: if (name && title && image && description) {
+    formState = "done";
+  } else {
+    formState = "invalid";
+  }
+
+  function addFormState() {
+    createdContact = {
+      id: Math.random().toString(),
+      name,
+      title,
+      description,
+      image
+    };
+    contactList = [...contactList, createdContact];
+  }
+
+  function removeCard(id) {
+    contactList = contactList.filter(contact => contact.id !== id);
+  }
 </script>
 
 <style>
@@ -33,4 +63,27 @@
   </div>
 </div>
 
-<ContactCard userName={name} jobTitle={title} {description} userImage={image} />
+<button on:click={addFormState}>Display card</button>
+
+<!-- If / else if / else condition statements -->
+{#if formState === 'done'}
+  <p>All details were added!</p>
+{:else if formState === 'invalid'}
+  <p>Invalid form state</p>
+{:else}
+  <p>Please fill the form</p>
+{/if}
+
+<!-- For loops -->
+<!-- Important to add unique indentifier like (contact.id) for
+     Better update cycle Svelte  -->
+{#each contactList as contact, index (contact.id)}
+  <h2># {index + 1}</h2>
+  <ContactCard
+    id={contact.id}
+    {removeCard}
+    userName={contact.name}
+    jobTitle={contact.title}
+    description={contact.description}
+    userImage={contact.image} />
+{/each}

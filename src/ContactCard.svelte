@@ -1,8 +1,15 @@
 <script>
-  export let userName = '';
-  export let jobTitle = '';
-  export let description = '';
-  export let userImage = '';
+  export let userName = "";
+  export let jobTitle = "";
+  export let description = "";
+  export let userImage = "";
+  export let id = "";
+
+  export let removeCard;
+
+  function onCardClick() {
+    removeCard(id);
+  }
 </script>
 
 <style>
@@ -64,9 +71,9 @@
   }
 </style>
 
-<div class="contact-card">
+<div on:click={onCardClick} class="contact-card">
   <header>
-    <div class="thumb" class:thumb-placeholder="{!userImage}">
+    <div class="thumb" class:thumb-placeholder={!userImage}>
       <img src={userImage} alt={userName} />
     </div>
     <div class="user-data">
