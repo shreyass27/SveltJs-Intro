@@ -1,11 +1,9 @@
 <script>
-	export let name;
+  import CourseGoal from './CourseGoal.svelte';
+
+  let courseGoal = "";
 </script>
 
-<style>
-	h1 {
-		color: purple;
-	}
-</style>
+<input type="text" bind:value={courseGoal} />
 
-<h1>Hello {name}!</h1>
+<CourseGoal {courseGoal}  />
