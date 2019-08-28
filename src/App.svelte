@@ -15,10 +15,15 @@
   let contactList = [];
 
   let formState = "";
-  $: if (name && title && image && description) {
-    formState = "done";
-  } else {
-    formState = "invalid";
+
+  // Will detect changes for "name", "title" , "image" & "description"
+  // And Run below code for Every change
+  $: {
+    if (name && title && image && description) {
+      formState = "done";
+    } else {
+      formState = "invalid";
+    }
   }
 
   function addFormState() {
@@ -29,11 +34,17 @@
       description,
       image
     };
+    // State changes only on Assignments | "="
     contactList = [...contactList, createdContact];
   }
 
   function removeCard(id) {
     contactList = contactList.filter(contact => contact.id !== id);
+  }
+
+  function handleNameChange(event) {
+    // One way event binding
+    name = event.target.value || '';
   }
 </script>
 
@@ -47,7 +58,12 @@
 <div id="form">
   <div class="form-control">
     <label for="userName">User Name</label>
-    <input type="text" bind:value={name} id="userName" />
+    <!-- Input using one way data binding -->
+    <input
+      type="text"
+      on:input={e => handleNameChange(e)}
+      value={name}
+      id="userName" />
   </div>
   <div class="form-control">
     <label for="jobTitle">Job Title</label>
@@ -76,7 +92,7 @@
 
 <!-- For loops -->
 <!-- Important to add unique indentifier like (contact.id) for
-     Better update cycle Svelte  -->
+     Better update cycle in Svelte  -->
 {#each contactList as contact, index (contact.id)}
   <h2># {index + 1}</h2>
   <ContactCard
