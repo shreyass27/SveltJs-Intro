@@ -1,5 +1,7 @@
 <script>
     export let courseGoal = '';
+
+    $: shouldHighLight = courseGoal.includes('!');
 </script>
 
 <style>
@@ -8,4 +10,4 @@
   }
 </style>
 
-<h1 class:red={courseGoal.includes('!')} >Course Goal Is: {courseGoal}</h1>
+<h1 class:red={shouldHighLight} >Course Goal Is: {courseGoal}</h1>
