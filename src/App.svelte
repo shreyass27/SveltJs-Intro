@@ -1,4 +1,7 @@
 <script>
+	// Name of the componet should be in pascal case
+	// small case will be identified as native html element.
+	// Need .svelte ext at end of import
 	import ContactCard from './ContactCard.svelte';
 
 	export let name;
