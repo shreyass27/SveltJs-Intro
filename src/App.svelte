@@ -36,6 +36,10 @@
     };
     // State changes only on Assignments | "="
     contactList = [...contactList, createdContact];
+    name = "";
+    title = "";
+    image = "";
+    description = "";
   }
 
   function removeCard(id) {
@@ -44,7 +48,7 @@
 
   function handleNameChange(event) {
     // One way event binding
-    name = event.target.value || '';
+    name = event.target.value || "";
   }
 </script>
 
@@ -79,7 +83,9 @@
   </div>
 </div>
 
-<button on:click={addFormState}>Display card</button>
+<button disabled={!(formState === 'done')} on:click={addFormState}>
+  Display card
+</button>
 
 <!-- If / else if / else condition statements -->
 {#if formState === 'done'}
@@ -102,4 +108,7 @@
     jobTitle={contact.title}
     description={contact.description}
     userImage={contact.image} />
+{:else}
+<!-- If array has no element  -->
+<p>Please start add elements. We found none!</p>
 {/each}
