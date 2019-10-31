@@ -69,9 +69,9 @@
   }
 
   form {
-	  width: 30rem;
-	  max-width: 90%;
-	  margin: auto;
+    width: 30rem;
+    max-width: 90%;
+    margin: auto;
   }
 </style>
 
@@ -86,6 +86,8 @@
       id="title"
       value={newMeet.title}
       on:input={handleFormInput} />
+    <!-- Passing function as prop -->
+    <!-- onInput={handleFormInput} /> -->
 
     <TextInput
       label="Sub Title"

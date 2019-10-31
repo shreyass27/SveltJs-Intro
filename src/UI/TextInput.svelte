@@ -1,8 +1,9 @@
 <script>
-  export let controlType = '';
+  export let controlType = "";
   export let label;
   export let id;
   export let value;
+  // export let onInput= () => {}
 </script>
 
 <style>
@@ -41,8 +42,11 @@
 <div class="form-control">
   <label for="title">{label}</label>
   {#if controlType === 'textarea'}
-    <textarea row="3" {id} value={value} on:input />
+    <!-- Passing onInput function via props -->
+    <!-- <textarea row="3" {id} value={value} on:input={onInput} /> -->
+    <!-- Using Event Forwarding -->
+    <textarea row="3" {id} {value} on:input />
   {:else}
-    <input type="text" id="title" value={value} on:input />
+    <input type="text" id={id || 'title'} {value} on:input />
   {/if}
 </div>
