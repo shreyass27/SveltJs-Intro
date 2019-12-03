@@ -110,5 +110,5 @@
     userImage={contact.image} />
 {:else}
 <!-- If array has no element  -->
-<p>Please start add elements. We found none!</p>
+<p>Please start adding elements. We found none!</p>
 {/each}
