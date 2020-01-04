@@ -4,7 +4,7 @@
 
   export let name;
   let openModal = false;
-  let closable = false;
+  let closable = true;
 
   const myName = "App";
   const products = [
@@ -36,17 +36,26 @@
 </style>
 
 {#each products as product (product.id)}
-  <Product {...product} on:addToCart={alertFunc} on:deleteCart={alertFunc} />
+  <Product
+    {...product}
+    on:addToCart={alertFunc}
+    on:deleteCart={alertFunc}
+    {alertFunc} />
+  <!-- Passing Alert function directlt as props  -->
 {/each}
 
 <button on:click={() => (openModal = true)}>Show Modal</button>
 
 {#if openModal}
   <!-- Variable prop can be passed and bind back to Parent compenent which uses SLOT -->
-  <Modal on:close={() => (openModal = false)} 
-  let:didAgree={closable}>
+  <Modal on:close={() => (openModal = false)} let:didAgree={closable}>
     <h1 slot="header">Hello</h1>
     <h3>This works</h3>
-    <button slot="footer" on:click={() => (openModal = false)} disabled={!closable}>Confirm</button>
+    <button
+      slot="footer"
+      on:click={() => (openModal = false)}
+      disabled={!closable}>
+      Confirm
+    </button>
   </Modal>
 {/if}

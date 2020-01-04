@@ -1,32 +1,38 @@
 <script>
-  import { createEventDispatcher, onMount, onDestroy, beforeUpdate, afterUpdate } from "svelte";
+  import {
+    createEventDispatcher,
+    onMount,
+    onDestroy,
+    beforeUpdate,
+    afterUpdate
+  } from "svelte";
 
   const dispatch = createEventDispatcher();
   let agreed = false;
   let autoScroll = false;
 
   onMount(() => {
-      console.log('Modal onMount');
+    console.log("Modal onMount");
   });
 
   onDestroy(() => {
-      console.log('Modal onDestroy');
+    console.log("Modal onDestroy");
   });
 
   beforeUpdate(() => {
-      console.log('Modal beforeUpdate');
-      autoScroll = agreed;
+    console.log("Modal beforeUpdate");
+    autoScroll = agreed;
   });
 
   afterUpdate(() => {
-      console.log('Modal afterUpdate');
-      if (autoScroll) {
-          const modal = document.querySelector('.modal');
-          modal.scrollTo(0, modal.scrollHeight);
-      }
+    console.log("Modal afterUpdate");
+    if (autoScroll) {
+      const modal = document.querySelector(".modal");
+      modal.scrollTo(0, modal.scrollHeight);
+    }
   });
 
-  console.log('Modal Script Executed');
+  console.log("Modal Script Executed");
 </script>
 
 <style>
