@@ -3,6 +3,8 @@
   export let label;
   export let id;
   export let value;
+  export let row = "3";
+
   // export let onInput= () => {}
 </script>
 
@@ -45,7 +47,7 @@
     <!-- Passing onInput function via props -->
     <!-- <textarea row="3" {id} value={value} on:input={onInput} /> -->
     <!-- Using Event Forwarding -->
-    <textarea row="3" {id} {value} on:input />
+    <textarea {row} {id} {value} on:input />
   {:else}
     <input type="text" id={id || 'title'} {value} on:input />
   {/if}

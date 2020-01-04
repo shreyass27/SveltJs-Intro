@@ -3,6 +3,7 @@
   export let text;
   export let href = "";
   export let mode = "";
+  export let color = "";
 </script>
 
 <style>
@@ -84,7 +85,11 @@
 </style>
 
 {#if href}
-  <a class={mode} {href}>{text}</a>
+  <a class={`${mode} ${color}`} {href}>
+    <slot />
+  </a>
 {:else}
-  <button class={mode} {type}>{text}</button>
+  <button class="{mode} {color}" {type} on:click>
+    <slot />
+  </button>
 {/if}

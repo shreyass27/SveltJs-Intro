@@ -1,17 +1,8 @@
 <script>
   import Header from "./UI/Header.svelte";
-  import TextInput from "./UI/TextInput.svelte";
   import Button from "./UI/Button.svelte";
   import MeetUpGrid from "./MeetUps/MeetUpGrid.svelte";
-
-  let newMeet = {
-    title: "",
-    subTitle: "",
-    description: "",
-    imageUrl: "",
-    address: "",
-    contactEmail: ""
-  };
+  import EditMeetUp from "./MeetUps/EditMeetUp.svelte";
 
   let meetUps = [
     {
@@ -23,7 +14,8 @@
       imageUrl:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG/800px-Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG",
       address: "27th Nerd Road, 32523 New York",
-      contactEmail: "code@test.com"
+      contactEmail: "code@test.com",
+      isFavorite: false
     },
     {
       id: "m2",
@@ -33,33 +25,31 @@
       imageUrl:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Olympic_swimming_pool_%28Tbilisi%29.jpg/800px-Olympic_swimming_pool_%28Tbilisi%29.jpg",
       address: "27th Nerd Road, 32523 New York",
-      contactEmail: "swim@test.com"
+      contactEmail: "swim@test.com",
+      isFavorite: false
     }
   ];
 
-  function addMeetup() {
+  let editMode = "";
+
+  function addMeetup(event) {
     meetUps = [
       {
         id: Math.random().toString(),
-        ...newMeet
+        ...event.detail
       },
       ...meetUps
     ];
-    newMeet = {
-      title: "",
-      subTitle: "",
-      description: "",
-      imageUrl: "",
-      address: "",
-      contactEmail: ""
-    };
+
+    editMode = "";
   }
 
-  function handleFormInput(event) {
-    newMeet = {
-      ...newMeet,
-      [event.target.id]: event.target.value
-    };
+  function onFavoriteMeetUp(event) {
+    const index = meetUps.findIndex(item => item.id === event.detail.id);
+    const updateMeetUp = { ...meetUps[index] };
+    updateMeetUp.isFavorite = !updateMeetUp.isFavorite;
+
+    meetUps[index] = updateMeetUp;
   }
 </script>
 
@@ -68,60 +58,19 @@
     margin-top: 5rem;
   }
 
-  form {
-    width: 30rem;
-    max-width: 90%;
-    margin: auto;
+  .meetup-action {
+    margin: 1rem;
   }
 </style>
 
 <Header />
 <main>
-  <!-- To prevent default submit behaviour of form
-	Used Svelte Event Modifier  `| preventDefault` -->
-  <form on:submit|preventDefault={addMeetup}>
+  <div class="meetup-action">
+    <Button on:click={() => (editMode = 'add')}>Add Meetup</Button>
+  </div>
 
-    <TextInput
-      label="Title"
-      id="title"
-      value={newMeet.title}
-      on:input={handleFormInput} />
-    <!-- Passing function as prop -->
-    <!-- onInput={handleFormInput} /> -->
-
-    <TextInput
-      label="Sub Title"
-      id="subTitle"
-      value={newMeet.subTitle}
-      on:input={handleFormInput} />
-
-    <TextInput
-      label="Image Url"
-      id="imageUrl"
-      value={newMeet.imageUrl}
-      on:input={handleFormInput} />
-
-    <TextInput
-      label="Contact Email"
-      id="contactEmail"
-      value={newMeet.contactEmail}
-      on:input={handleFormInput} />
-
-    <TextInput
-      label="Address"
-      id="address"
-      value={newMeet.address}
-      on:input={handleFormInput} />
-
-    <TextInput
-      label="Description"
-      id="description"
-      controlType="textarea"
-      value={newMeet.description}
-      on:input={handleFormInput} />
-
-    <Button type="submit" text="Submit" />
-  </form>
-
-  <MeetUpGrid meetups={meetUps} />
+  {#if editMode === 'add'}
+    <EditMeetUp on:submitMeetup={addMeetup} on:close={() => (editMode = '')} />
+  {/if}
+  <MeetUpGrid on:togglefavorite={onFavoriteMeetUp} meetups={meetUps} />
 </main>
