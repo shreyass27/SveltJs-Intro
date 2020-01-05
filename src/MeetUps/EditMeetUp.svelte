@@ -3,6 +3,7 @@
   import TextInput from "../UI/TextInput.svelte";
   import Button from "../UI/Button.svelte";
   import Modal from "../UI/Modal.svelte";
+  import { notEmpty, validEmail } from "../helper/validation";
 
   let newMeet = {
     title: "",
@@ -16,15 +17,25 @@
   const dispatch = createEventDispatcher();
 
   function submitMeetup() {
-    dispatch("submitMeetup", { ...newMeet });
-    newMeet = {
-      title: "",
-      subTitle: "",
-      description: "",
-      imageUrl: "",
-      address: "",
-      contactEmail: ""
-    };
+    const isValid =
+      notEmpty(newMeet.title) &&
+      notEmpty(newMeet.subTitle) &&
+      notEmpty(newMeet.description) &&
+      notEmpty(newMeet.imageUrl) &&
+      notEmpty(newMeet.address) &&
+      validEmail(newMeet.contactEmail);
+
+    if (isValid) {
+      dispatch("submitMeetup", { ...newMeet });
+      newMeet = {
+        title: "",
+        subTitle: "",
+        description: "",
+        imageUrl: "",
+        address: "",
+        contactEmail: ""
+      };
+    }
   }
 
   function handleFormInput(event) {
@@ -57,6 +68,7 @@
       label="Title"
       id="title"
       value={newMeet.title}
+      valid={notEmpty(newMeet.title)}
       on:input={handleFormInput} />
     <!-- Passing function as prop -->
     <!-- onInput={handleFormInput} /> -->
@@ -65,24 +77,28 @@
       label="Sub Title"
       id="subTitle"
       value={newMeet.subTitle}
+      valid={notEmpty(newMeet.subTitle)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Image Url"
       id="imageUrl"
       value={newMeet.imageUrl}
+      valid={notEmpty(newMeet.imageUrl)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Contact Email"
       id="contactEmail"
       value={newMeet.contactEmail}
+      valid={validEmail(newMeet.contactEmail)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Address"
       id="address"
       value={newMeet.address}
+      valid={notEmpty(newMeet.address)}
       on:input={handleFormInput} />
 
     <TextInput
@@ -90,8 +106,8 @@
       id="description"
       controlType="textarea"
       row="3"
-      value={newMeet.description}
-      on:input={handleFormInput} />
+      valid={notEmpty(newMeet.description)}
+      bind:value={newMeet.description} />
   </form>
   <div slot="footer">
     <Button mode="outline" on:click={closeEdit}>Close</Button>

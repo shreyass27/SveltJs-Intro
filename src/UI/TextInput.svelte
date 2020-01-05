@@ -4,6 +4,9 @@
   export let id;
   export let value;
   export let row = "3";
+  export let valid = true;
+  export let validityMessage = `Please enter valid ${label}`;
+  let touched = false;
 
   // export let onInput= () => {}
 </script>
@@ -39,6 +42,16 @@
     width: 100%;
     margin: 0.25rem 0;
   }
+
+  .invalid {
+    border-color: red;
+    background: #fde3e3;
+  }
+
+  .error-message {
+    color: red;
+    margin: 0.25rem 0;
+  }
 </style>
 
 <div class="form-control">
@@ -47,8 +60,23 @@
     <!-- Passing onInput function via props -->
     <!-- <textarea row="3" {id} value={value} on:input={onInput} /> -->
     <!-- Using Event Forwarding -->
-    <textarea {row} {id} {value} on:input />
+    <textarea
+      class:invalid={!valid && touched}
+      {row}
+      {id}
+      bind:value
+      on:blur={() => (touched = true)} />
   {:else}
-    <input type="text" id={id || 'title'} {value} on:input />
+    <input
+      class:invalid={!valid && touched}
+      type="text"
+      id={id || 'title'}
+      {value}
+      on:input
+      on:blur={() => (touched = true)} />
+  {/if}
+
+  {#if !valid && touched && validityMessage}
+    <p class="error-message">{validityMessage}</p>
   {/if}
 </div>
