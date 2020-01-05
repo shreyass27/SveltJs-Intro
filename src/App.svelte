@@ -1,55 +1,34 @@
 <script>
   import Header from "./UI/Header.svelte";
-  import Button from "./UI/Button.svelte";
   import MeetUpGrid from "./MeetUps/MeetUpGrid.svelte";
+  import MeetUpDetail from "./MeetUps/MeetUpDetail.svelte";
   import EditMeetUp from "./MeetUps/EditMeetUp.svelte";
 
-  let meetUps = [
-    {
-      id: "m1",
-      title: "Coding Bootcamp",
-      subTitle: "Learn to code in 2 hours",
-      description:
-        "In this meetup, we will have some experts that teach you how to code!",
-      imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG/800px-Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG",
-      address: "27th Nerd Road, 32523 New York",
-      contactEmail: "code@test.com",
-      isFavorite: false
-    },
-    {
-      id: "m2",
-      title: "Swim Together",
-      subTitle: "Let's go for some swimming",
-      description: "We will simply swim some rounds!",
-      imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Olympic_swimming_pool_%28Tbilisi%29.jpg/800px-Olympic_swimming_pool_%28Tbilisi%29.jpg",
-      address: "27th Nerd Road, 32523 New York",
-      contactEmail: "swim@test.com",
-      isFavorite: false
-    }
-  ];
-
   let editMode = "";
+  let page = "";
+  let editId = "";
 
-  function addMeetup(event) {
-    meetUps = [
-      {
-        id: Math.random().toString(),
-        ...event.detail
-      },
-      ...meetUps
-    ];
-
+  function closeEditMeetup() {
     editMode = "";
+    editId = "";
   }
 
-  function onFavoriteMeetUp(event) {
-    const index = meetUps.findIndex(item => item.id === event.detail.id);
-    const updateMeetUp = { ...meetUps[index] };
-    updateMeetUp.isFavorite = !updateMeetUp.isFavorite;
+  function showDetail(event) {
+    if (event.detail) {
+      page = event.detail;
+    } else {
+      page = "";
+    }
+  }
 
-    meetUps[index] = updateMeetUp;
+  function onAddMeetUp(event) {
+    editMode = "add";
+    editId = "";
+  }
+
+  function onEditMeetUp(event) {
+    editMode = "edit";
+    editId = event.detail;
   }
 </script>
 
@@ -57,20 +36,22 @@
   main {
     margin-top: 5rem;
   }
-
-  .meetup-action {
-    margin: 1rem;
-  }
 </style>
 
 <Header />
 <main>
-  <div class="meetup-action">
-    <Button on:click={() => (editMode = 'add')}>Add Meetup</Button>
-  </div>
-
-  {#if editMode === 'add'}
-    <EditMeetUp on:submitMeetup={addMeetup} on:close={() => (editMode = '')} />
+  {#if page}
+    <MeetUpDetail id={page} on:close-details={showDetail} />
+  {:else}
+    {#if editMode}
+      <EditMeetUp
+        id={editId}
+        on:submitMeetup={closeEditMeetup}
+        on:close={closeEditMeetup} />
+    {/if}
+    <MeetUpGrid
+      on:add-meetup={onAddMeetUp}
+      on:show-detail={showDetail}
+      on:edit={onEditMeetUp} />
   {/if}
-  <MeetUpGrid on:togglefavorite={onFavoriteMeetUp} meetups={meetUps} />
 </main>

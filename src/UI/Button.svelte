@@ -1,6 +1,5 @@
 <script>
   export let type = "button";
-  export let text;
   export let href = "";
   export let mode = "";
   export let color = "";

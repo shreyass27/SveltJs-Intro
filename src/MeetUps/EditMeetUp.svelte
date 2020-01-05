@@ -1,11 +1,14 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+  import meetups from "./meetups.store";
   import TextInput from "../UI/TextInput.svelte";
   import Button from "../UI/Button.svelte";
   import Modal from "../UI/Modal.svelte";
   import { notEmpty, validEmail } from "../helper/validation";
 
-  let newMeet = {
+  export let id = null;
+
+  let currentMeet = {
     title: "",
     subTitle: "",
     description: "",
@@ -14,20 +17,35 @@
     contactEmail: ""
   };
 
+  onMount(() => {
+    if (id) {
+      const unsubscribe = meetups.subscribe(items => {
+        const editMeetup = items.find(itm => itm.id === id);
+        currentMeet = { ...editMeetup };
+      });
+      unsubscribe();
+    }
+  });
+
   const dispatch = createEventDispatcher();
 
   function submitMeetup() {
     const isValid =
-      notEmpty(newMeet.title) &&
-      notEmpty(newMeet.subTitle) &&
-      notEmpty(newMeet.description) &&
-      notEmpty(newMeet.imageUrl) &&
-      notEmpty(newMeet.address) &&
-      validEmail(newMeet.contactEmail);
+      notEmpty(currentMeet.title) &&
+      notEmpty(currentMeet.subTitle) &&
+      notEmpty(currentMeet.description) &&
+      notEmpty(currentMeet.imageUrl) &&
+      notEmpty(currentMeet.address) &&
+      validEmail(currentMeet.contactEmail);
 
     if (isValid) {
-      dispatch("submitMeetup", { ...newMeet });
-      newMeet = {
+      if (id) {
+        meetups.updateMeetup(id, { ...currentMeet });
+      } else {
+        meetups.addMeetup({ ...currentMeet });
+      }
+      dispatch("submitMeetup");
+      currentMeet = {
         title: "",
         subTitle: "",
         description: "",
@@ -38,9 +56,16 @@
     }
   }
 
+  function deleteMeetup() {
+    if (id) {
+      meetups.deleteMeetup(id);
+      closeEdit();
+    }
+  }
+
   function handleFormInput(event) {
-    newMeet = {
-      ...newMeet,
+    currentMeet = {
+      ...currentMeet,
       [event.target.id]: event.target.value
     };
   }
@@ -67,8 +92,8 @@
     <TextInput
       label="Title"
       id="title"
-      value={newMeet.title}
-      valid={notEmpty(newMeet.title)}
+      value={currentMeet.title}
+      valid={notEmpty(currentMeet.title)}
       on:input={handleFormInput} />
     <!-- Passing function as prop -->
     <!-- onInput={handleFormInput} /> -->
@@ -76,29 +101,29 @@
     <TextInput
       label="Sub Title"
       id="subTitle"
-      value={newMeet.subTitle}
-      valid={notEmpty(newMeet.subTitle)}
+      value={currentMeet.subTitle}
+      valid={notEmpty(currentMeet.subTitle)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Image Url"
       id="imageUrl"
-      value={newMeet.imageUrl}
-      valid={notEmpty(newMeet.imageUrl)}
+      value={currentMeet.imageUrl}
+      valid={notEmpty(currentMeet.imageUrl)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Contact Email"
       id="contactEmail"
-      value={newMeet.contactEmail}
-      valid={validEmail(newMeet.contactEmail)}
+      value={currentMeet.contactEmail}
+      valid={validEmail(currentMeet.contactEmail)}
       on:input={handleFormInput} />
 
     <TextInput
       label="Address"
       id="address"
-      value={newMeet.address}
-      valid={notEmpty(newMeet.address)}
+      value={currentMeet.address}
+      valid={notEmpty(currentMeet.address)}
       on:input={handleFormInput} />
 
     <TextInput
@@ -106,12 +131,16 @@
       id="description"
       controlType="textarea"
       row="3"
-      valid={notEmpty(newMeet.description)}
-      bind:value={newMeet.description} />
+      valid={notEmpty(currentMeet.description)}
+      bind:value={currentMeet.description} />
   </form>
   <div slot="footer">
     <Button mode="outline" on:click={closeEdit}>Close</Button>
     <Button on:click={submitMeetup}>Save</Button>
+
+    {#if id}
+      <Button mode="outline" on:click={deleteMeetup}>Delete</Button>
+    {/if}
   </div>
 
 </Modal>
