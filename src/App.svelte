@@ -1,11 +1,7 @@
 <script>
-	export let name;
+  import Cart from "./Cart/Cart.svelte";
+  import Products from "./Products/Products.svelte";
 </script>
 
-<style>
-	h1 {
-		color: purple;
-	}
-</style>
-
-<h1>Hello {name}!</h1>
+<Cart />
+<Products />
