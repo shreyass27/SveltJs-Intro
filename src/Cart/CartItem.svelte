@@ -1,18 +1,33 @@
 <script>
   import Button from "../UI/Button.svelte";
+  import { createEventDispatcher } from "svelte";
+  import products from "../Products/products.store";
 
   export let title;
   export let price;
   export let id;
 
+  const dispatch = createEventDispatcher();
+
   let showDescription = false;
+  let description = "Not Available :(";
 
   function displayDescription() {
     showDescription = !showDescription;
+
+    const unSub = products.subscribe(prods => {
+      const product = prods.find(item => item.id === id);
+
+      if (product) {
+        description = product.description;
+      }
+    });
+
+    unSub();
   }
 
   function removeFromCart() {
-    // ...
+    dispatch("remove-item", id);
     console.log("Removing...");
   }
 </script>
@@ -46,6 +61,6 @@
   </Button>
   <Button on:click={removeFromCart}>Remove from Cart</Button>
   {#if showDescription}
-    <p>Not available :(</p>
+    <p>{description}</p>
   {/if}
 </li>

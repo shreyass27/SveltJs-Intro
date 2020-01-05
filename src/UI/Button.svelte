@@ -1,5 +1,5 @@
 <script>
-  export let mode;
+  export let mode = "";
 </script>
 
 <style>
