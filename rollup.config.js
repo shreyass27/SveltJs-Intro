@@ -30,10 +30,7 @@ export default {
 		// some cases you'll need additional configuration —
 		// consult the documentation for details:
 		// https://github.com/rollup/rollup-plugin-commonjs
-		resolve({
-			browser: true,
-			dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/')
-		}),
+		resolve(),
 		commonjs(),
 
 		// Watch the `public` directory and refresh the
@@ -43,8 +40,5 @@ export default {
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
 		production && terser()
-	],
-	watch: {
-		clearScreen: false
-	}
+	]
 };
