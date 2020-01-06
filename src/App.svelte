@@ -28,7 +28,9 @@
 		name = e.target.value;
 	}
 
-	let upperName = '';
+  let upperName = '';
+  
+  // Acts as Watcher 
 	$: {
 		upperName = name.toUpperCase();
 		logger(upperName);
