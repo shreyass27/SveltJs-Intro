@@ -1,5 +1,6 @@
 <script>
   import { writable } from "svelte/store";
+  import { spring } from "svelte/motion";
   
   let cards = writable([
     {
@@ -19,14 +20,16 @@
       color: "orange"
     }
   ]);
-  let cardPos = writable([
+
+  // For spring and tweened values should be number or Date 
+  let cardPos = spring([
     {
       rotation: 10,
       dx: 0
     },
     {
       rotation: -10,
-      dx: 0
+      dx: 0 
     },
     {
       rotation: 19,
@@ -36,7 +39,11 @@
       rotation: -25,
       dx: 0
     }
-  ]);
+  ], {
+    stiffness: 0.05,
+    damping: 0.9,
+    precision: 0.9
+  });
 
   function discard(index) {
     cardPos.update(items => {
