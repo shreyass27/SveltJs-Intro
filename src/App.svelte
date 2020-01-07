@@ -1,11 +1,30 @@
 <script>
-	export let name;
+  import { addHobbiesAPI } from "./api.utility";
+
+  let hobbyName = "";
+  let hobbies = [];
+
+  async function addHobby() {
+    try {
+      hobbies = [...hobbies, hobbyName];
+      const res = await addHobbiesAPI(hobbies);
+      hobbyName = "";
+    } catch (e) {
+      console.log(e);
+    }
+  }
 </script>
 
 <style>
-	h1 {
-		color: purple;
-	}
+
 </style>
 
-<h1>Hello {name}!</h1>
+<label for="hobby">Hobby</label>
+<input type="text" id="hobby" bind:value={hobbyName} />
+<button on:click={addHobby}>Add Bobby</button>
+
+<ul>
+  {#each hobbies as hobby (hobby)}
+    <li>{hobby}</li>
+  {/each}
+</ul>
