@@ -1,6 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import Button from "./Button.svelte";
+  import { fade, scale } from "svelte/transition";
 
   export let title;
   export let open;
@@ -59,17 +60,18 @@
   }
 </style>
 
-{#if open}
-  <div class="modal-backdrop" on:click={closeModal} />
-  <div class="modal">
-    <h1>{title}</h1>
-    <div class="content">
-      <slot />
-    </div>
-    <footer>
-      <slot name="footer">
-        <Button on:click={closeModal}>Close</Button>
-      </slot>
-    </footer>
+<!-- Close modal animation doest work properly with below if  -->
+<!-- {#if open} -->
+<div transition:fade class="modal-backdrop" on:click={closeModal} />
+<div transition:scale class="modal">
+  <h1>{title}</h1>
+  <div class="content">
+    <slot />
   </div>
-{/if}
+  <footer>
+    <slot name="footer">
+      <Button on:click={closeModal}>Close</Button>
+    </slot>
+  </footer>
+</div>
+<!-- {/if} -->

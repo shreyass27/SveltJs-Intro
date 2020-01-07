@@ -3,6 +3,7 @@
   import Button from "../UI/Button.svelte";
   import Badge from "../UI/Badge.svelte";
   import { createEventDispatcher } from "svelte";
+  import { scale } from "svelte/transition";
 
   export let id;
   export let title;
@@ -87,7 +88,7 @@
   }
 </style>
 
-<article>
+<article transition:scale>
   <header>
     <h1 class:isFavorite>
       {title}
@@ -107,7 +108,6 @@
   <footer>
     <Button mode="outline" on:click={() => dispatch('edit', id)}>Edit</Button>
     <Button href="mailTo:{contactEmail}">Contact</Button>
-
     <Button
       mode="outline"
       color={isFavorite ? '' : 'success'}
