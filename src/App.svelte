@@ -3,6 +3,8 @@
   import { tweened } from "svelte/motion";
   import { cubicIn, cubicOut } from "svelte/easing";
   import Spring from "./Spring.svelte";
+  import { fade, fly, slide, scale } from "svelte/transition";
+  import { flip } from "svelte/animate";
 
   //   const progress = writable(0);
   // const progress = tweened(0, {
@@ -17,10 +19,15 @@
 
   let boxes = [];
   let boxinput = "";
+  let showPara = true;
 
   function addBox() {
-    boxes = [...boxes, boxinput];
-    boxinput = '';
+    boxes = [boxinput, ...boxes];
+    boxinput = "";
+  }
+
+  function deleteBox(box) {
+    boxes = [...boxes.filter(bx => box !== bx)];
   }
 </script>
 
@@ -42,6 +49,30 @@
 <input type="text" bind:value={boxinput} />
 <button on:click={addBox}>Add</button>
 
-{#each boxes as box (box)}
-  <div>{box}</div>
-{/each}
+{#if showPara}
+  {#each boxes as box (box)}
+    <div
+      transition:fly|local={{ x: 300, y: 0 }}
+      on:click={deleteBox.bind(this, box)}
+      on:introstart={() => console.log('On Adding Element starts:', box)}
+      on:introend={() => console.log('On Adding Element end:', box)}
+      on:outrostart={() => console.log('On Removing Element starts:', box)}
+      on:outroend={() => console.log('On Removing Element end:', box)}
+      animate:flip>
+      {box}
+    </div>
+  {/each}
+{/if}
+
+<hr />
+
+<button
+  on:click={() => {
+    showPara = !showPara;
+  }}>
+  Toggle Para
+</button>
+
+{#if showPara}
+  <p in:fade out:fly={{ x: 300 }}>Can you see me ?</p>
+{/if}
