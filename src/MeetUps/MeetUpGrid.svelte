@@ -12,6 +12,7 @@
   let meetUps = [];
   let filteredMeetups = [];
   let unSub;
+  let isLoading = false;
 
   const dispatch = createEventDispatcher();
 
@@ -28,15 +29,18 @@
 
   async function getMeetUps() {
     try {
+      isLoading = true;
       const res = await getMeetUpsAPI();
 
       const resHobbies = [];
       for (let key in res) {
         resHobbies.push({ ...res[key], id: key });
       }
-      
+
       meetups.setMeetup(resHobbies);
+      isLoading = false;
     } catch (error) {
+      isLoading = false;
       console.log("getMeetUps API", error);
     }
   }
@@ -75,10 +79,16 @@
   <MeetupFilter active={favOnly} on:filter={setFilter} />
   <Button on:click={() => dispatch('add-meetup')}>Add Meetup</Button>
 </section>
-<section id="meetUps">
-  {#each filteredMeetups as meetup, i (meetup.id)}
-    <div transition:scale animate:flip={{ duration: 300 }}>
-      <MeetUpItem on:show-detail {...meetup} on:edit />
-    </div>
-  {/each}
-</section>
+{#if isLoading}
+  <p>Loading...</p>
+{:else if filteredMeetups.length < 1}
+  <p transition:fade>No meetups found, you can start adding some.</p>
+{:else}
+  <section id="meetUps">
+    {#each filteredMeetups as meetup, i (meetup.id)}
+      <div transition:scale animate:flip={{ duration: 300 }}>
+        <MeetUpItem on:show-detail {...meetup} on:edit />
+      </div>
+    {/each}
+  </section>
+{/if}
