@@ -16,13 +16,14 @@ export async function addMeetUpsAPI(meetup) {
 
     } catch (error) {
         console.log('addMeetUpsAPI error', error);
+        throw Error('Error occured while ading meet up');
     }
 }
 
 export async function editMeetUpsAPI(meetup) {
     try {
         const res = await fetch(`https://svelte-course-999.firebaseio.com/meetups/${meetup.id}.json`, {
-            method: "PUT",
+            method: "PATCH",
             body: JSON.stringify(meetup),
             headers: {
                 'Content-Type': 'application/json'
@@ -36,7 +37,8 @@ export async function editMeetUpsAPI(meetup) {
         }
 
     } catch (error) {
-        console.log('addMeetUpsAPI error', error);
+        console.log('editMeetUpsAPI error', error);
+        throw Error('Error occured while editing meet up');
     }
 }
 export async function deleteMeetUpsAPI(id) {
@@ -56,7 +58,8 @@ export async function deleteMeetUpsAPI(id) {
         }
 
     } catch (error) {
-        console.log('addMeetUpsAPI error', error);
+        console.log('deleting error', error);
+        throw Error('Error occured while deleting meet up');
     }
 }
 
@@ -76,6 +79,7 @@ export async function getMeetUpsAPI() {
         }
 
     } catch (error) {
-        console.log('addMeetUpsAPI error', error);
+        console.log('gteting error', error);
+        throw Error('Error occured while gteting meet up');
     }
 }

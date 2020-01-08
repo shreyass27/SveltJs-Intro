@@ -4,6 +4,8 @@
   import Badge from "../UI/Badge.svelte";
   import { createEventDispatcher } from "svelte";
   import { scale } from "svelte/transition";
+  import { editMeetUpsAPI } from "../helper/api.service";
+  import Error from "../UI/Error.svelte";
 
   export let id;
   export let title;
@@ -14,10 +16,22 @@
   export let contactEmail;
   export let isFavorite = false;
 
+  let showError = false;
+  let errorMessage = "";
+
   const dispatch = createEventDispatcher();
 
-  function toggleFavorite() {
-    meetups.toggleFavorite(id);
+  async function toggleFavorite() {
+    try {
+      await editMeetUpsAPI({
+        isFavorite: !isFavorite,
+        id
+      });
+      meetups.toggleFavorite(id);
+    } catch (error) {
+      showError = true;
+      errorMessage = error.message || error;
+    }
   }
 
   function onShowDetail() {
@@ -117,3 +131,4 @@
     <Button on:click={onShowDetail}>Show Details</Button>
   </footer>
 </article>
+<Error bind:showError {errorMessage} />

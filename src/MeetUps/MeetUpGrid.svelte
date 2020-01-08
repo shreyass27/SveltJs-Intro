@@ -3,6 +3,8 @@
   import MeetUpItem from "./MeetUpItem.svelte";
   import MeetupFilter from "./MeetupFilter.svelte";
   import Button from "../UI/Button.svelte";
+  import Error from "../UI/Error.svelte";
+  import Loader from "../UI/Loader.svelte";
   import meetups from "./meetups.store";
   import { scale } from "svelte/transition";
   import { flip } from "svelte/animate";
@@ -12,7 +14,10 @@
   let meetUps = [];
   let filteredMeetups = [];
   let unSub;
-  let isLoading = false;
+  let isLoading = true;
+
+  let showError = false;
+  let errorMessage = "";
 
   const dispatch = createEventDispatcher();
 
@@ -37,10 +42,12 @@
         resHobbies.push({ ...res[key], id: key });
       }
 
-      meetups.setMeetup(resHobbies);
+      meetups.setMeetup(resHobbies.reverse());
       isLoading = false;
     } catch (error) {
       isLoading = false;
+      showError = true;
+      errorMessage = error.message || error ;
       console.log("getMeetUps API", error);
     }
   }
@@ -80,9 +87,9 @@
   <Button on:click={() => dispatch('add-meetup')}>Add Meetup</Button>
 </section>
 {#if isLoading}
-  <p>Loading...</p>
-{:else if filteredMeetups.length < 1}
-  <p transition:fade>No meetups found, you can start adding some.</p>
+  <Loader />
+{:else if filteredMeetups.length < 1 && !showError}
+  <p transition:scale>No meetups found, you can start adding some.</p>
 {:else}
   <section id="meetUps">
     {#each filteredMeetups as meetup, i (meetup.id)}
@@ -92,3 +99,4 @@
     {/each}
   </section>
 {/if}
+<Error bind:showError {errorMessage} />

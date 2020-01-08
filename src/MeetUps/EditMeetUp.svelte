@@ -10,6 +10,7 @@
     editMeetUpsAPI,
     deleteMeetUpsAPI
   } from "../helper/api.service";
+  import Error from "../UI/Error.svelte";
 
   export let id = null;
 
@@ -21,6 +22,8 @@
     address: "",
     contactEmail: ""
   };
+  let showError = false;
+  let errorMessage = "";
 
   onMount(() => {
     if (id) {
@@ -70,6 +73,8 @@
         };
       }
     } catch (error) {
+      showError = true;
+      errorMessage = error.message || error ;
       console.log("Error in submitMeetup function", error);
     }
   }
@@ -82,6 +87,8 @@
         closeEdit();
       }
     } catch (error) {
+      showError = true;
+      errorMessage = error.message || error ;
       console.log("Error in deleteMeetup function", error);
     }
   }
@@ -168,3 +175,4 @@
   </div>
 
 </Modal>
+<Error bind:showError {errorMessage} />
