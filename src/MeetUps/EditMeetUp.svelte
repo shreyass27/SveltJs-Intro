@@ -5,6 +5,11 @@
   import Button from "../UI/Button.svelte";
   import Modal from "../UI/Modal.svelte";
   import { notEmpty, validEmail } from "../helper/validation";
+  import {
+    addMeetUpsAPI,
+    editMeetUpsAPI,
+    deleteMeetUpsAPI
+  } from "../helper/api.service";
 
   export let id = null;
 
@@ -29,37 +34,55 @@
 
   const dispatch = createEventDispatcher();
 
-  function submitMeetup() {
-    const isValid =
-      notEmpty(currentMeet.title) &&
-      notEmpty(currentMeet.subTitle) &&
-      notEmpty(currentMeet.description) &&
-      notEmpty(currentMeet.imageUrl) &&
-      notEmpty(currentMeet.address) &&
-      validEmail(currentMeet.contactEmail);
+  async function submitMeetup() {
+    try {
+      const isValid =
+        notEmpty(currentMeet.title) &&
+        notEmpty(currentMeet.subTitle) &&
+        notEmpty(currentMeet.description) &&
+        notEmpty(currentMeet.imageUrl) &&
+        notEmpty(currentMeet.address) &&
+        validEmail(currentMeet.contactEmail);
 
-    if (isValid) {
-      if (id) {
-        meetups.updateMeetup(id, { ...currentMeet });
-      } else {
-        meetups.addMeetup({ ...currentMeet });
+      if (isValid) {
+        if (id) {
+          const response = await editMeetUpsAPI({ ...currentMeet });
+          meetups.updateMeetup(id, { ...currentMeet });
+        } else {
+          const newMeetUp = {
+            ...currentMeet,
+            isFavorite: false
+          };
+
+          const response = await addMeetUpsAPI(newMeetUp);
+
+          newMeetUp.id = response.name;
+          meetups.addMeetup(newMeetUp);
+        }
+        dispatch("submitMeetup");
+        currentMeet = {
+          title: "",
+          subTitle: "",
+          description: "",
+          imageUrl: "",
+          address: "",
+          contactEmail: ""
+        };
       }
-      dispatch("submitMeetup");
-      currentMeet = {
-        title: "",
-        subTitle: "",
-        description: "",
-        imageUrl: "",
-        address: "",
-        contactEmail: ""
-      };
+    } catch (error) {
+      console.log("Error in submitMeetup function", error);
     }
   }
 
-  function deleteMeetup() {
-    if (id) {
-      meetups.deleteMeetup(id);
-      closeEdit();
+  async function deleteMeetup() {
+    try {
+      if (id) {
+        await deleteMeetUpsAPI(id);
+        meetups.deleteMeetup(id);
+        closeEdit();
+      }
+    } catch (error) {
+      console.log("Error in deleteMeetup function", error);
     }
   }
 
@@ -131,8 +154,9 @@
       id="description"
       controlType="textarea"
       row="3"
+      value={currentMeet.description}
       valid={notEmpty(currentMeet.description)}
-      bind:value={currentMeet.description} />
+      on:input={handleFormInput} />
   </form>
   <div slot="footer">
     <Button mode="outline" on:click={closeEdit}>Close</Button>
