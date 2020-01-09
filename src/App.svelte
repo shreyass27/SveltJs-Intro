@@ -1,11 +1,47 @@
 <script>
-	export let name;
+  import Product from "./Product.svelte";
+  import CartItem from "./CartItem.svelte";
+  import FamilyNode from "./FamilyNode.svelte";
+
+  let renderComp = {
+    cmp: Product,
+    title: "Product title one"
+  };
+
+  let familyStructure = [
+    {
+      isParent: true,
+      name: "Chris",
+      children: [
+        {
+          isParent: true,
+          name: "Moe",
+          children: [{ isParent: false, name: "Julie" }]
+        }
+      ]
+    },
+    { isParent: false, name: "Mandy" }
+  ];
+
+  function toggleProduct() {
+    if (renderComp.cmp === Product) {
+      renderComp = {
+        cmp: CartItem,
+        title: "CartItem title one"
+      };
+    } else {
+      renderComp = {
+        cmp: Product,
+        title: "Product title one"
+      };
+    }
+  }
 </script>
 
-<style>
-	h1 {
-		color: purple;
-	}
-</style>
+<button on:click={toggleProduct}>Toggle Display</button>
 
-<h1>Hello {name}!</h1>
+<svelte:component this={renderComp.cmp} title={renderComp.title} id="p1" />
+
+{#each familyStructure as familyMem}
+  <FamilyNode member={familyMem} />
+{/each}
