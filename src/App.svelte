@@ -3,6 +3,9 @@
   import CartItem from "./CartItem.svelte";
   import FamilyNode from "./FamilyNode.svelte";
 
+  let y;
+  let currentTitle = "Svelte Def Title";
+
   let renderComp = {
     cmp: Product,
     title: "Product title one"
@@ -23,6 +26,8 @@
     { isParent: false, name: "Mandy" }
   ];
 
+  $: console.log(y);
+
   function toggleProduct() {
     if (renderComp.cmp === Product) {
       renderComp = {
@@ -36,12 +41,32 @@
       };
     }
   }
+  function switchTitle() {
+    currentTitle = "A New Title";
+  }
 </script>
 
-<button on:click={toggleProduct}>Toggle Display</button>
+<style>
+  div {
+    height: 3000px;
+  }
+</style>
 
-<svelte:component this={renderComp.cmp} title={renderComp.title} id="p1" />
+<svelte:window bind:scrollY={y} />
+<svelte:body on:mouseenter />
+<button on:click={switchTitle}>Switch Title</button>
+<svelte:head>
+  <!-- Whatever goes in Head Tag can be manipulate with svelte:head element -->
+  <title>{currentTitle}</title>
+</svelte:head>
 
-{#each familyStructure as familyMem}
-  <FamilyNode member={familyMem} />
-{/each}
+<div>
+  <button on:click={toggleProduct}>Toggle Display</button>
+
+  <svelte:component this={renderComp.cmp} title={renderComp.title} id="p1" />
+
+  {#each familyStructure as familyMem}
+    <FamilyNode member={familyMem} />
+  {/each}
+
+</div>
